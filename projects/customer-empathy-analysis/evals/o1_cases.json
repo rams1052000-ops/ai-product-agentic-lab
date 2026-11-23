@@ -1,0 +1,14 @@
+[
+  {
+    "id": "003",
+    "feedback": "Checkout fails, but search works great.",
+    "themes": ["checkout search"],
+    "expected_verdict": "FAIL"
+  },
+  {
+    "id": "009",
+    "feedback": "Login is slow and checkout crashes.",
+    "themes": ["Performance issues"],
+    "expected_verdict": "PASS"
+  }
+]

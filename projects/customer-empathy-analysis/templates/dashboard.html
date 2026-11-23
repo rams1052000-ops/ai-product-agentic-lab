@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Customer Feedback Analyzer{% endblock %}
+{% block content %}
+<section class="dashboard-head">
+  <div>
+    <div class="eyebrow"><span></span> Product pulse</div>
+    <h1>Feedback <em>dashboard.</em></h1>
+    <p>A clear view of what customers need, how they feel, and what deserves attention.</p>
+  </div>
+  <a class="primary-link" href="{{ url_for('home') }}">+ Analyze new feedback</a>
+</section>
+
+<section class="metrics-grid">
+  <article class="metric total-card">
+    <span>Total feedback</span>
+    <strong>{{ metrics.total }}</strong>
+    <small>Analyzed items</small>
+  </article>
+  <article class="metric">
+    <span>Feedback by theme</span>
+    {% if metrics.by_theme %}
+      <div class="metric-list">
+        {% for row in metrics.by_theme[:4] %}
+          <div><b>{{ row.theme }}</b><strong>{{ row.count }}</strong></div>
+        {% endfor %}
+      </div>
+    {% else %}<p class="empty-copy">No theme data yet.</p>{% endif %}
+  </article>
+  <article class="metric">
+    <span>Feedback by sentiment</span>
+    {% if metrics.by_sentiment %}
+      <div class="metric-list">
+        {% for row in metrics.by_sentiment %}
+          <div><b><i class="dot {{ row.sentiment|lower }}"></i>{{ row.sentiment }}</b><strong>{{ row.count }}</strong></div>
+        {% endfor %}
+      </div>
+    {% else %}<p class="empty-copy">No sentiment data yet.</p>{% endif %}
+  </article>
+</section>
+
+<section class="feedback-section">
+  <div class="section-title">
+    <div><span class="step">02</span><h2>All analyzed feedback</h2></div>
+    <span>{{ items|length }} shown</span>
+  </div>
+
+  <form class="filters" method="get">
+    <select name="theme" aria-label="Filter by theme">
+      <option value="">All themes</option>
+      {% for theme in metrics.themes %}
+        <option value="{{ theme }}" {{ 'selected' if theme == selected_theme else '' }}>{{ theme }}</option>
+      {% endfor %}
+    </select>
+    <select name="sentiment" aria-label="Filter by sentiment">
+      <option value="">All sentiments</option>
+      {% for sentiment in ['Positive', 'Neutral', 'Negative', 'Mixed'] %}
+        <option value="{{ sentiment }}" {{ 'selected' if sentiment == selected_sentiment else '' }}>{{ sentiment }}</option>
+      {% endfor %}
+    </select>
+    <select name="sort" aria-label="Sort feedback">
+      <option value="newest" {{ 'selected' if selected_sort == 'newest' else '' }}>Newest first</option>
+      <option value="oldest" {{ 'selected' if selected_sort == 'oldest' else '' }}>Oldest first</option>
+      <option value="urgency" {{ 'selected' if selected_sort == 'urgency' else '' }}>Highest urgency</option>
+    </select>
+    <button type="submit" class="filter-button">Apply</button>
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feedback</th><th>Source</th><th>Theme</th><th>Sentiment</th><th>Urgency</th><th>Priority</th><th>Summary</th></tr></thead>
+      <tbody>
+      {% for item in items %}
+        <tr>
+          <td class="feedback-cell">{{ item.feedback }}</td>
+          <td>{{ item.source }}</td>
+          <td><span class="tag theme">{{ item.theme }}</span></td>
+          <td><span class="tag sentiment {{ item.sentiment|lower }}">{{ item.sentiment }}</span></td>
+          <td><span class="tag urgency {{ item.urgency|lower }}">{{ item.urgency }}</span></td>
+          <td><span class="tag priority">{{ item.priority or '—' }}</span></td>
+          <td class="summary-cell">{{ item.summary }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" class="empty-state">No feedback matches this view. Analyze your first item to get started.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

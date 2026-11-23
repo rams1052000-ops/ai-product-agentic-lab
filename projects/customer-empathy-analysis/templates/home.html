@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Analyze Feedback · Customer Feedback Analyzer{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow"><span></span> Customer intelligence, distilled</div>
+  <h1>Turn customer words into <em>product signals.</em></h1>
+  <p>Paste a review, support ticket, or survey response. Get a consistent theme, sentiment, urgency, and summary in seconds.</p>
+</section>
+
+<section class="analyzer-shell">
+  <div class="form-heading">
+    <div>
+      <span class="step">01</span>
+      <h2>Add customer feedback</h2>
+    </div>
+    <span class="privacy-note">Stored in your local database</span>
+  </div>
+
+  <form action="{{ url_for('analyze') }}" method="post">
+    <label for="feedback">Feedback</label>
+    <textarea id="feedback" name="feedback" maxlength="10000" required placeholder="The latest update is much faster, but I still can't export my report as a PDF. I need it for a client meeting tomorrow..."></textarea>
+
+    <div class="form-footer">
+      <div class="source-field">
+        <label for="source">Source</label>
+        <select id="source" name="source" required>
+          {% for source in sources %}
+            <option value="{{ source }}">{{ source }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit">Analyze feedback <span aria-hidden="true">→</span></button>
+    </div>
+  </form>
+</section>
+
+<section class="signal-preview" aria-label="Analysis fields">
+  <div><span>Theme</span><strong>What is it about?</strong></div>
+  <div><span>Sentiment</span><strong>How do they feel?</strong></div>
+  <div><span>Urgency</span><strong>How soon to act?</strong></div>
+  <div><span>Summary</span><strong>What matters most?</strong></div>
+</section>
+{% endblock %}
