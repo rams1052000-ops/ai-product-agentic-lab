@@ -48,23 +48,7 @@ flowchart LR
 8. Only a validated analysis is persisted in SQLite.
 9. Dashboard counts, filters, and sorting are calculated deterministically.
 
-## Trust and control boundaries
 
-```mermaid
-flowchart TD
-    INPUT[Untrusted customer input] --> MODEL[Probabilistic LLM interpretation]
-    MODEL --> OUTPUT[Untrusted model output]
-    OUTPUT --> VALIDATE{Application validation}
-    VALIDATE -->|Invalid| STOP[Stop and show safe error]
-    VALIDATE -->|Valid| ALLOWLIST{Approved tool and arguments?}
-    ALLOWLIST -->|No| STOP
-    ALLOWLIST -->|Yes| LOGIC[Deterministic Python logic]
-    LOGIC --> STORE[(Validated persistence)]
-```
-
-The LLM cannot execute arbitrary tools, write directly to SQLite, change the
-priority mapping, or approve its own output. The application owns validation,
-business rules, persistence, and failure behavior.
 
 ## Evaluation architecture
 
